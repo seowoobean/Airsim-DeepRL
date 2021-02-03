@@ -115,7 +115,7 @@ car_client = CarClient()
 car_client.confirmConnection()
 image = get_image(car_client)
 
-#image = plt.imshow(image) 
+image = plt.imshow(image) 
 
 activation = 'relu'
 

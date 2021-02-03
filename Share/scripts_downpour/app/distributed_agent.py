@@ -238,6 +238,7 @@ class DistributedAgent():
         print('Waiting for momentum to die')
         self.__car_controls.steering = 0
         self.__car_controls.throttle = 0
+        #self.__car_controls.speed = 0
         self.__car_controls.brake = 1
         self.__car_client.setCarControls(self.__car_controls)
         time.sleep(4)
@@ -249,6 +250,7 @@ class DistributedAgent():
         print('Running car for a few seconds...')
         self.__car_controls.steering = 0
         self.__car_controls.throttle = 1
+        self.__car_controls.speed = 0
         self.__car_controls.brake = 0
         self.__car_client.setCarControls(self.__car_controls)
         
@@ -257,6 +259,7 @@ class DistributedAgent():
         while(datetime.datetime.now() < stop_run_time):
             time.sleep(wait_delta_sec)
             state_buffer = self.__append_to_ring_buffer(self.__get_image(), state_buffer, state_buffer_len)
+        #print(state_buffer)
         done = False
         actions = [] #records the state we go to
         pre_states = []
@@ -284,6 +287,9 @@ class DistributedAgent():
             # 4) The car has run off the road
             if (collision_info.has_collided or car_state.speed < 2 or utc_now > end_time or far_off):
                 print('Start time: {0}, end time: {1}'.format(start_time, utc_now), file=sys.stderr)
+                self.__car_controls.speed = 0 #changed by wb 2021-02-03
+                time.sleep(3)
+
                 if (utc_now > end_time):
                     print('timed out.')
                     print('Full autonomous run finished at {0}'.format(utc_now), file=sys.stderr)
